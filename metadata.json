@@ -1,0 +1,7 @@
+{
+  "name": "Robo AI - Animator",
+  "description": "Create animated GIFs with Robo AI from your images and prompts.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
