@@ -11,8 +11,9 @@ import { buildCreativeInstruction, promptSuggestions } from './prompts';
 import CameraView, { CameraViewHandles } from './components/CameraView';
 import AnimationPlayer from './components/AnimationPlayer';
 import LoadingOverlay from './components/LoadingOverlay';
-import { UploadIcon, SwitchCameraIcon, XCircleIcon, CameraIcon } from './components/icons';
+import { UploadIcon, SwitchCameraIcon, XCircleIcon, CameraIcon, HelpCircleIcon } from './components/icons';
 import AnimatorButton from './components/BanamimatorButton';
+import HelpDialog from './components/HelpDialog';
 
 // --- FEATURE FLAGS ---
 // Set to `true` to make uploading or capturing an image mandatory to create an animation.
@@ -87,6 +88,7 @@ const App: React.FC = () => {
   const shouldAnimateAfterCapture = useRef<boolean>(false);
   const typingAnimationRef = useRef<any>(null);
   const promptWasInitiallyEmpty = useRef<boolean>(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   useEffect(() => {
     const checkForMultipleCameras = async () => {
@@ -376,7 +378,16 @@ IMAGE OUTPUT REQUIREMENTS:
       case AppState.Capturing:
         return (
           <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto">
-             <div className="w-full mt-3 mb-2 overflow-x-auto no-scrollbar" aria-label="Animation style suggestions">
+            <div className="w-full flex justify-end">
+              <button
+                onClick={() => setIsHelpOpen(true)}
+                className="bg-black/50 p-2 rounded-full text-white hover:bg-black/75 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:ring-indigo-500"
+                aria-label="Open help dialog"
+              >
+                <HelpCircleIcon className="w-6 h-6" />
+              </button>
+            </div>
+             <div className="w-full mt-1 mb-2 overflow-x-auto no-scrollbar" aria-label="Animation style suggestions">
                 <div className="w-max mx-auto flex items-center gap-x-3 sm:gap-x-4 px-4">
                   {promptSuggestions.map(({ emoji, prompt }) => {
                     const isActive = ALLOW_MULTIPLE_EMOJI_SELECTION
@@ -540,6 +551,7 @@ IMAGE OUTPUT REQUIREMENTS:
 
   return (
     <div className="h-dvh bg-black text-gray-100 flex flex-col items-center p-4 overflow-y-auto">
+      {isHelpOpen && <HelpDialog onClose={() => setIsHelpOpen(false)} />}
       <div className="w-full grow flex items-center [@media(max-height:750px)]:items-start justify-center">
         {renderContent()}
       </div>
